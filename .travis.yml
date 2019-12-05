@@ -24,12 +24,11 @@ matrix:
 
 before_install:
   - phpenv config-rm xdebug.ini || echo 'No xdebug config.'
-  - composer self-update
 
 install:
   - composer install --no-interaction
 
 script:
-  - find src tests \( -name '*.php' \) -exec php -l {} \;
-  - if [[ $TRAVIS_PHP_VERSION == "7.3" ]]; then phpcs; fi
+  - find src/ tests/ -type f -name '*.php' -print0|xargs -0 -L1 -P4 -- php -l
+  - if [[ $(phpenv version-name) == 7.3 ]]; then phpcs; fi
   - vendor/bin/phpunit
